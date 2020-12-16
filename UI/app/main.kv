@@ -1,46 +1,43 @@
 SM:
     MainScreen:
     LoginScreen:
-    SignScreen:
+    NotesScreen:
 
 <MainScreen>:
     name: 'main'
 
     GridLayout:
-        rows: 3
+        rows: 2
         columns: 1
-        padding: root.width *0.1, root.height *0.2, root.height *0.1, root.width *0.2
-        spacing: 0, root.height *0.1
+        padding: root.width *0.1, root.height *0.05, root.height *0.1, root.width *0.05
 
 
         MDLabel:
             text: "Faice"
+            halign: "left"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
-            size_hint: 1, 1
-            font_size: "60sp"
-            theme_text_color: "Custom"
-            # text_color: 233, 12, 43, 1
-
-        Camera:
-            id: camera
-            play: False
+            font_size: "50sp"
 
         MDFillRoundFlatButton:
-            text: "Se connecter"
+            text: "Login"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             size_hint: 1, 1
-            font_size: "13sp"
+            font_size: "50sp"
             on_release:
                 app.root.current = "login"
-                root.manager.transition.direction = "rigth"
+                root.manager.transition.direction = "right"
 
-        MDFillRoundFlatButton:
-            text: 'Play'
-            on_press: camera.play = not camera.play
 
-        MDFillRoundFlatButton:
-            text: 'Capture'
-            on_press: root.capture
+<LoginScreen>:
+    name: 'login'
+    orientation: 'vertical'
+    on_enter: root.build()
+    Camera:
+        id: camera
+        resolution: (640, 480)
+        play: True
 
+<NotesScreen>:
+    name: 'notes'
 
 
