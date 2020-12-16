@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
-import requests
 import os
 
 # Initiate APP
