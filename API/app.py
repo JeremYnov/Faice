@@ -47,7 +47,7 @@ class Note(db.Model):
 
 # API routes creation
 class FaceApi(Resource):
-    def get(self, facialChain):
+    def get(self):
         # Query the User
         user = User.query.filter_by(facialChain=facialChain).first()
         # if user doesn't exist, create a new user
@@ -89,7 +89,7 @@ class DeleteNote(Resource):
         db.session.commit()
         return jsonify("200")
 
-api.add_resource(FaceApi, "/face/<string:facialChain>")
+api.add_resource(FaceApi, "/face")
 api.add_resource(AddNote, "/addnote/<string:title>/<string:content>/<int:user_id>")
 api.add_resource(UpdateNote, "/updatenote/<int:note>/<string:title>/<string:content>/<int:user_id>")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")

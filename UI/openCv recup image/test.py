@@ -51,10 +51,19 @@ def auto_crop_image(image, frame, vc):
                 # return crpim, image, (x, y, w, h)
     return None, image, (0,0,0,0)
 
+def send_image_to_api():
+    api_url = "http://127.0.0.1:5000/face"
+    headers = {'content-type': 'image/jpeg'}
+
+    img = cv2.imread('saved_img-final.jpg')
+    response = requests.post(api_url, data=img.tostring(), headers=headers)
+
+    print(json.loads(response.text))
+
+
 def webcam_face_recognizer():
     cv2.namedWindow("preview")
     vc = cv2.VideoCapture(0)
-    name = ""
     
     while vc.isOpened():
         _, frame = vc.read()
@@ -62,6 +71,7 @@ def webcam_face_recognizer():
         # Image analysis (start here with img loaded with your image)
         # We do not want to detect a new identity while the program is in the process of identifying another person
         imgcrop,img, (x, y, w, h) = auto_crop_image(img, frame, vc)
+        send_image_to_api()
  
         key = cv2.waitKey(1) & 0xff
         if key == 27: # exit on ESC
