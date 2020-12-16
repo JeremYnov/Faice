@@ -1,0 +1,43 @@
+SM:
+    MainScreen:
+    LoginScreen:
+    NotesScreen:
+
+<MainScreen>:
+    name: 'main'
+
+    GridLayout:
+        rows: 2
+        columns: 1
+        padding: root.width *0.1, root.height *0.05, root.height *0.1, root.width *0.05
+
+
+        MDLabel:
+            text: "Faice"
+            halign: "left"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "50sp"
+
+        MDFillRoundFlatButton:
+            text: "Login"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            size_hint: 1, 1
+            font_size: "50sp"
+            on_release:
+                app.root.current = "login"
+                root.manager.transition.direction = "right"
+
+
+<LoginScreen>:
+    name: 'login'
+    orientation: 'vertical'
+    on_enter: root.build()
+    Camera:
+        id: camera
+        resolution: (640, 480)
+        play: True
+
+<NotesScreen>:
+    name: 'notes'
+
+
