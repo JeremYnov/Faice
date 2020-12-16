@@ -1,13 +1,11 @@
 # Imports
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
 import requests
-import numpy as np
-import cv2
 import os
 
 # Initiate APP

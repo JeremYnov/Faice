@@ -61,7 +61,6 @@ def send_image_to_api():
 
 
 def webcam_face_recognizer():
-    cv2.namedWindow("preview")
     vc = cv2.VideoCapture(0)
     
     while vc.isOpened():
