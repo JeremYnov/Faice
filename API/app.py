@@ -48,11 +48,7 @@ class Note(db.Model):
 
 # API routes creation
 class FaceApi(Resource):
-    def get(self):
-        return {'message': 'pas de methode get'}
-    
     def post(self):   
-         
         # Aller dans le bon directory
         current_dir = os.getcwd();
         path = current_dir + "\\faces\\"
