@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import os
+import requests 
+import json
 
 def auto_crop_image(image, frame, vc):
     if image is not None:
@@ -39,26 +41,23 @@ def auto_crop_image(image, frame, vc):
                 crpim = cv2.resize(crpim, (224,224), interpolation = cv2.INTER_AREA)
                 cv2.waitKey(1650)
                 cv2.destroyAllWindows()
-                print("Processing image...")
                 gray = cv2.cvtColor(crpim, cv2.COLOR_BGR2GRAY)
-                cv2.imwrite(filename='saved_img.jpg', img=crpim)
-                img_resized = cv2.imwrite(filename='saved_img-final.jpg', img=gray)
-                print("Image saved!")
                 
-                # crpim = im[box[1]:box[3],box[0]:box[2]]
-                # crpim = cv2.resize(crpim, (224,224), interpolation = cv2.INTER_AREA)
-                # print(crpim)
-                # return crpim, image, (x, y, w, h)
-    return None, image, (0,0,0,0)
+                # # Aller dans le bon directory
+                current_dir = os.getcwd();
+                path = current_dir + "\\face\\"
+                cv2.imwrite(os.path.join(path,'saved_img.jpg'), img=crpim)
+                img_resized = cv2.imwrite(os.path.join(path,'saved_img-final.jpg'), img=gray)
+    return
 
 def send_image_to_api():
     api_url = "http://127.0.0.1:5000/face"
-    headers = {'content-type': 'image/jpeg'}
-
-    img = cv2.imread('saved_img-final.jpg')
-    response = requests.post(api_url, data=img.tostring(), headers=headers)
-
-    print(json.loads(response.text))
+    current_dir = os.getcwd();
+    path = current_dir + "\\face\\"
+    imgPath = path + "saved_img-final.jpg"
+    files = {'image' : open(imgPath, 'rb')}
+    response = requests.request('POST', api_url, files=files)
+    return print(response.text)
 
 
 def webcam_face_recognizer():
@@ -70,8 +69,12 @@ def webcam_face_recognizer():
         img = frame
         # Image analysis (start here with img loaded with your image)
         # We do not want to detect a new identity while the program is in the process of identifying another person
-        imgcrop,img, (x, y, w, h) = auto_crop_image(img, frame, vc)
+        auto_crop_image(img, frame, vc)
         send_image_to_api()
+        current_dir = os.getcwd();
+        path = current_dir + "\\face\\"
+        os.remove(os.path.join(path,'saved_img-final.jpg'))
+        # os.remove(os.path.join(path,'saved_img.jpg'))
  
         key = cv2.waitKey(1) & 0xff
         if key == 27: # exit on ESC

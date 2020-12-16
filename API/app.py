@@ -1,10 +1,14 @@
 # Imports
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, Response
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
+import requests
+import numpy as np
+import cv2
+import os
 
 # Initiate APP
 app = Flask(__name__)
@@ -48,21 +52,34 @@ class Note(db.Model):
 # API routes creation
 class FaceApi(Resource):
     def get(self):
-        # Query the User
-        user = User.query.filter_by(facialChain=facialChain).first()
-        # if user doesn't exist, create a new user
-        if user is None :
-            newUser = User(facialChain=facialChain)
-            db.session.add(newUser)
-            db.session.commit()
-            user = User.query.filter_by(facialChain=facialChain).first()
-        # Query the notes of the user
-        userNotes = Note.query.filter_by(user_id=user.id).all()
-        # If no notes, return a statement
-        if not userNotes :
-            return jsonify('You don\'t have any notes for now... Start noting')
-        # Else return notes
-        return jsonify(notes=[note.serialize() for note in userNotes])
+        return {'message': 'pas de methode get'}
+    
+    def post(self):   
+         
+        # Aller dans le bon directory
+        current_dir = os.getcwd();
+        path = current_dir + "\\faces\\"
+        file = request.files['image']
+        file.save(path + 'test.jpg')
+        response = {'message':'image received'}
+        return response
+        
+        # LA SUITE !!!!
+        # # Query the User
+        # user = User.query.filter_by(facialChain=facialChain).first()
+        # # if user doesn't exist, create a new user
+        # if user is None :
+        #     newUser = User(facialChain=facialChain)
+        #     db.session.add(newUser)
+        #     db.session.commit()
+        #     user = User.query.filter_by(facialChain=facialChain).first()
+        # # Query the notes of the user
+        # userNotes = Note.query.filter_by(user_id=user.id).all()
+        # # If no notes, return a statement
+        # if not userNotes :
+        #     return jsonify('You don\'t have any notes for now... Start noting')
+        # # Else return notes
+        # return jsonify(notes=[note.serialize() for note in userNotes])
 
 class AddNote(Resource):
     def get(self, title, content, user_id):
