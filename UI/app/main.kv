@@ -1,7 +1,8 @@
 SM:
+    NotesListScreen
+    NoteScreen:
     MainScreen:
     LoginScreen:
-    NotesScreen:
 
 <MainScreen>:
     name: 'main'
@@ -29,7 +30,7 @@ SM:
 <LoginScreen>:
 
     name: 'login'
-    on_enter: root.build()
+    on_enter: root.capture()
 
     FloatLayout:
 
@@ -45,7 +46,61 @@ SM:
             resolution: (300, 500)
             play: True
 
-<NotesScreen>:
-    name: 'notes'
+
+<NotesListScreen>:
+    name: 'notesList'
+    on_pre_enter: root.build()
+
+    FloatLayout:
+        MDLabel:
+            pos_hint: {'x':0.1, 'top':0.9}
+            size_hint: (0.2, 0.1)
+            text: "Faice"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "50sp"
+
+        ScrollView:
+            pos_hint: {'center_x': .6, 'center_y': .5}
+            size_hint: (0.6, 0.7)
+            scroll_timeout: 250
+            scroll_distance: 20
+
+            MDList:
+                id: notes_list
 
 
+<NoteScreen>:
+    name: 'note'
+    on_pre_enter: root.build()
+
+    FloatLayout:
+
+        MDLabel:
+            pos_hint: {'x':0.1, 'top': 0.9}
+            size_hint: (0.2, 0.1)
+            text: "Faice"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "50sp"
+
+        MDTextField:
+            id : noteField
+            multiline: True
+            pos_hint: {'top': 0.7, 'right': 0.9}
+            size_hint: (0.8, 0.5)
+            mode: "fill"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "16sp"
+            fill_color: 0, 0, 0, 0.1
+
+        MDRoundFlatButton:
+            pos_hint: {'y': 0.09, 'x': 0.57}
+            text: "Supprimer"
+            text_color: 1, 1, 1, 1
+            md_bg_color: 1, 0, 0, 0.6
+
+        MDFillRoundFlatButton:
+            pos_hint: {'y': 0.07, 'x': 0.7}
+            size_hint: (0.2, 0.1)
+            text: "Save"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "15sp"
