@@ -26,7 +26,7 @@ class User(db.Model):
 
     def serialize(self):
         return {
-            'facialChain': self.facialChain, 
+            'facialChain': self.facialChain,
             'created': self.created
         }
 
@@ -40,7 +40,7 @@ class Note(db.Model):
     def serialize(self):
         return {
             'id' : self.id,
-            'title': self.title, 
+            'title': self.title,
             'content': self.content,
             'updated': self.updated,
             'user_id': self.user_id
@@ -48,7 +48,7 @@ class Note(db.Model):
 
 # API routes creation
 class FaceApi(Resource):
-    def post(self):   
+    def post(self):
         # Aller dans le bon directory
         current_dir = os.getcwd();
         path = current_dir + "\\faces\\"
@@ -56,7 +56,7 @@ class FaceApi(Resource):
         file.save(path + 'test.jpg')
         response = {'message':'image received'}
         return response
-        
+
         # LA SUITE !!!!
         # # Query the User
         # user = User.query.filter_by(facialChain=facialChain).first()
@@ -74,21 +74,26 @@ class FaceApi(Resource):
         # # Else return notes
         # return jsonify(notes=[note.serialize() for note in userNotes])
 
+class GetNote(Resource):
+    def get(self, user_id):
+        userNotes = Note.query.filter_by(user_id=user_id).all()
+        return jsonify(notes=[note.serialize() for note in userNotes])
+
 class AddNote(Resource):
-    def get(self, title, content, user_id):
-        newNote = Note(title=title, content=content, user_id=user_id)
+    def post(self):
+        req = request.json
+        newNote = Note(title=req['title'], content=req['content'], updated=req['updated'], user_id=req['user_id'])
         db.session.add(newNote)
         db.session.commit()
         return jsonify("200")
 
 class UpdateNote(Resource):
-    def get(self, note, title, content, user_id):
-        # Query note and delete it
-        oldNote = Note.query.filter_by(id=note).first()
-        db.session.delete(oldNote)
-        # Add updated note to query
-        newNote = Note(title=title, content=content, user_id=user_id)
-        db.session.add(newNote)
+    def post(self):
+        req = request.json
+        updatedNote = Note.query.filter_by(id=req['id']).first()
+        updatedNote.title=req['title']
+        updatedNote.content=req['content']
+        updatedNote.updated=req['updated']
         db.session.commit()
         return jsonify("200")
 
@@ -100,8 +105,9 @@ class DeleteNote(Resource):
         return jsonify("200")
 
 api.add_resource(FaceApi, "/face")
-api.add_resource(AddNote, "/addnote/<string:title>/<string:content>/<int:user_id>")
-api.add_resource(UpdateNote, "/updatenote/<int:note>/<string:title>/<string:content>/<int:user_id>")
+api.add_resource(GetNote, "/getnote/<int:user_id>")
+api.add_resource(AddNote, "/addnote")
+api.add_resource(UpdateNote, "/updatenote")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")
 
 if __name__ == "__main__":
