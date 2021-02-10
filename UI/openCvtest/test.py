@@ -2,6 +2,7 @@ import cv2
 import os
 import requests 
 import json
+import base64
 
 def auto_crop_image(image, frame, vc):
     if image is not None:
@@ -50,12 +51,23 @@ def auto_crop_image(image, frame, vc):
     return
 
 def send_image_to_api():
-    api_url = "http://127.0.0.1:5000/face"
+    # api_url = "http://127.0.0.1:5000/face"
+    # current_dir = os.getcwd();
+    # path = current_dir + "\\face\\"
+    # imgPath = path + "saved_img-final.jpg"
+    # files = {'image' : open(imgPath, 'rb')}
+    # response = requests.request('POST', api_url, files=files)
+
+    # On encode B64 avant d'envoyer :
+    api_url = "http://127.0.0.1:5000/face64"
     current_dir = os.getcwd();
     path = current_dir + "\\face\\"
     imgPath = path + "saved_img-final.jpg"
-    files = {'image' : open(imgPath, 'rb')}
-    response = requests.request('POST', api_url, files=files)
+
+    with open(imgPath, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+
+    response = requests.request( 'POST', api_url, data = { "img" : encoded_string } )
     return print(response.text)
 
 
