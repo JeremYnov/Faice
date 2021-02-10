@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
 import os
+import base64
 
 # Initiate APP
 app = Flask(__name__)
@@ -52,8 +53,8 @@ class FaceApi(Resource):
         # Aller dans le bon directory
         current_dir = os.getcwd();
         path = current_dir + "\\faces\\"
-        file = request.files['image']
-        file.save(path + 'test.jpg')
+        img = request.files['image']
+        img.save(path + 'test.jpg')
         response = {'message':'image received'}
         return response
 
@@ -104,11 +105,23 @@ class DeleteNote(Resource):
         db.session.commit()
         return jsonify("200")
 
+class B64(Resource):
+    def post(self):
+        # Aller dans le bon directory
+        current_dir = os.getcwd();
+        path = current_dir + "\\faces\\"
+        file = request.body()
+        file = base64.b64decode(file)
+        file.save(path + 'test.jpg')
+        response = {'message':'image received'}
+        return response
+
 api.add_resource(FaceApi, "/face")
 api.add_resource(GetNote, "/getnote/<int:user_id>")
 api.add_resource(AddNote, "/addnote")
 api.add_resource(UpdateNote, "/updatenote")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")
+api.add_resource(B64, "/face64")
 
 if __name__ == "__main__":
     app.run(debug=True)
