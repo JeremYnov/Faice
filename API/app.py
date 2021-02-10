@@ -1,4 +1,4 @@
-# Imports
+# Imports API
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
@@ -6,6 +6,17 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
 import os
+# # Imports IA
+# import numpy as np
+# import cv2
+# from scipy.spatial.distance import cosine as dcos
+# from scipy.io import loadmat
+# from keras.models import Sequential, Model
+# from keras.layers import Flatten, Dropout, Activation, Permute
+# from keras.layers import Convolution2D, MaxPooling2D
+# from keras import backend as K
+# K.set_image_data_format( 'channels_last' )
+
 
 # Initiate APP
 app = Flask(__name__)
