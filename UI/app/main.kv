@@ -1,10 +1,10 @@
 SM:
     NotesListScreen
     NoteScreen:
-    MainScreen:
+    FirstScreen:
     LoginScreen:
 
-<MainScreen>:
+<FirstScreen>:
     name: 'main'
 
     FloatLayout:
@@ -48,8 +48,8 @@ SM:
 
 
 <NotesListScreen>:
-    name: 'notesList'
-    on_pre_enter: root.build()
+    name: 'notes'
+    on_pre_enter: root.get_notes()
 
     FloatLayout:
         MDLabel:
@@ -59,6 +59,13 @@ SM:
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "50sp"
 
+        MDSpinner:
+            id: spinner
+            size_hint: None, None
+            size: dp(90), dp(90)
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            active: True
+
         ScrollView:
             pos_hint: {'center_x': .6, 'center_y': .5}
             size_hint: (0.6, 0.7)
@@ -66,7 +73,23 @@ SM:
             scroll_distance: 20
 
             MDList:
-                id: notes_list
+                id: notesContainer
+
+        MDFillRoundFlatButton:
+            pos_hint: {'y': 0.07, 'x': 0.7}
+            size_hint: (0.2, 0.1)
+            text: "Add a note"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "15sp"
+            on_press: root.create_note()
+
+        MDFillRoundFlatButton:
+            pos_hint: {'y': 0.07, 'x': 0.1}
+            size_hint: (0.2, 0.1)
+            text: "Logout"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "15sp"
+            on_press: root.add_note()
 
 
 <NoteScreen>:
@@ -83,20 +106,38 @@ SM:
             font_size: "50sp"
 
         MDTextField:
-            id : noteField
+            id : noteTitle
             multiline: True
-            pos_hint: {'top': 0.7, 'right': 0.9}
-            size_hint: (0.8, 0.5)
+            pos_hint: {'top': 0.75, 'right': 0.9}
+            size_hint: (0.8, 0.1)
+            mode: "fill"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "16sp"
+            fill_color: 0, 0, 0, 0.1
+
+        MDTextField:
+            id : noteContent
+            multiline: True
+            pos_hint: {'top': 0.6, 'right': 0.9}
+            size_hint: (0.8, 0.4)
             mode: "fill"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "16sp"
             fill_color: 0, 0, 0, 0.1
 
         MDRoundFlatButton:
-            pos_hint: {'y': 0.09, 'x': 0.57}
-            text: "Supprimer"
+            pos_hint: {'y': 0.1, 'x': 0.1}
+            text: "Return"
             text_color: 1, 1, 1, 1
             md_bg_color: 1, 0, 0, 0.6
+            on_press: root.return_to_list()
+
+        MDRoundFlatButton:
+            pos_hint: {'y': 0.1, 'x': 0.6}
+            text: "Delete"
+            text_color: 1, 1, 1, 1
+            md_bg_color: 1, 0, 0, 0.6
+            on_press: root.delete_note()
 
         MDFillRoundFlatButton:
             pos_hint: {'y': 0.07, 'x': 0.7}
@@ -104,3 +145,4 @@ SM:
             text: "Save"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "15sp"
+            on_press: root.save_note()
