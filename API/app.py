@@ -121,9 +121,9 @@ class B64(Resource):
         # Aller dans le bon directory
         current_dir = os.getcwd();
         path = current_dir + "\\faces\\"
-        file = data
-        file = base64.b64decode(file.encode('unicode-escape'))
-        file.save(path + 'test.jpg')
+        img = data
+        img = base64.b64decode(img.encode('unicode-escape'))
+        img.save(path + 'test.jpg')
         response = {'message':'image received'}
         return response
 

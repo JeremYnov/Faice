@@ -28,7 +28,7 @@ def auto_crop_image(image, frame, vc):
             (x, y, w, h) = faces[0]
             center_x = x+w/2
             center_y = y+h/2
-            height, width, channels = im.shape
+            height, width = im.shape
             b_dim = min(max(w,h)*1.2,width, height)
             box = [center_x-b_dim/2, center_y-b_dim/2, center_x+b_dim/2, center_y+b_dim/2]
             box = [int(x) for x in box]
@@ -44,23 +44,15 @@ def auto_crop_image(image, frame, vc):
                 gray = cv2.cvtColor(crpim, cv2.COLOR_BGR2GRAY)
                 
                 # # Aller dans le bon directory
-                current_dir = os.getcwd();
+                current_dir = os.getcwd()
                 path = current_dir + "\\face\\"
                 cv2.imwrite(os.path.join(path,'saved_img.jpg'), img=crpim)
-                img_resized = cv2.imwrite(os.path.join(path,'saved_img-final.jpg'), img=gray)
+                cv2.imwrite(os.path.join(path,'saved_img-final.jpg'), img=gray)
     return
 
 def send_image_to_api():
-    # api_url = "http://127.0.0.1:5000/face"
-    # current_dir = os.getcwd();
-    # path = current_dir + "\\face\\"
-    # imgPath = path + "saved_img-final.jpg"
-    # files = {'image' : open(imgPath, 'rb')}
-    # response = requests.request('POST', api_url, files=files)
-
-    # On encode B64 avant d'envoyer :
     api_url = "http://127.0.0.1:5000/face64"
-    current_dir = os.getcwd();
+    current_dir = os.getcwd()
     path = current_dir + "\\face\\"
     imgPath = path + "saved_img-final.jpg"
 
@@ -77,17 +69,15 @@ def webcam_face_recognizer():
     while vc.isOpened():
         _, frame = vc.read()
         img = frame
-        # Image analysis (start here with img loaded with your image)
-        # We do not want to detect a new identity while the program is in the process of identifying another person
         auto_crop_image(img, frame, vc)
         send_image_to_api()
-        current_dir = os.getcwd();
+        current_dir = os.getcwd()
         path = current_dir + "\\face\\"
         os.remove(os.path.join(path,'saved_img-final.jpg'))
-        # os.remove(os.path.join(path,'saved_img.jpg'))
+        os.remove(os.path.join(path,'saved_img.jpg'))
  
         key = cv2.waitKey(1) & 0xff
-        if key == 27: # exit on ESC
+        if key == 27:
             break
     cv2.destroyWindow("preview")
     
