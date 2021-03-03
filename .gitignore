@@ -1,3 +1,4 @@
 .vscode
 *venv
 *vgg-face.mat
+*__pycache__
