@@ -1,11 +1,5 @@
-SM:
-    NotesListScreen
-    NoteScreen:
-    FirstScreen:
-    LoginScreen:
-
 <FirstScreen>:
-    name: 'main'
+    name: 'first_screen'
 
     FloatLayout:
 
@@ -23,14 +17,14 @@ SM:
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "50sp"
             on_release:
-                app.root.current = "login"
+                app.root.current = "login_screen"
                 root.manager.transition.direction = "right"
 
 
 <LoginScreen>:
 
-    name: 'login'
-    on_enter: root.capture()
+    name: 'login_screen'
+    
 
     FloatLayout:
 
@@ -48,7 +42,7 @@ SM:
 
 
 <NotesListScreen>:
-    name: 'notes'
+    name: 'main_screen'
     on_pre_enter: root.get_notes()
 
     FloatLayout:
@@ -93,7 +87,7 @@ SM:
 
 
 <NoteScreen>:
-    name: 'note'
+    name: 'note_screen'
     on_pre_enter: root.build()
 
     FloatLayout:
