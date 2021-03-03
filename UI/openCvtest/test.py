@@ -4,7 +4,7 @@ import requests
 import json
 import base64
 
-def auto_crop_image(image, frame, vc):
+def auto_crop_image(image):
     if image is not None:
         im = image.copy()
         # Load HaarCascade from the file with OpenCV
@@ -36,7 +36,6 @@ def auto_crop_image(image, frame, vc):
             if box[0] >= 0 and box[1] >= 0 and box[2] <= width and box[3] <= height:
                 
                 # cv2.imwrite(filename='saved_img.jpg', img=frame)
-                vc.release()
                 crpim = im[box[1]:box[3],box[0]:box[2]]
                 crpim = cv2.resize(crpim, (224,224), interpolation = cv2.INTER_AREA)
                 cv2.waitKey(1650)
@@ -57,10 +56,12 @@ def send_image_to_api():
     imgPath = path + "saved_img-final.jpg"
 
     with open(imgPath, "rb") as image_file:
+        if cv.GetSize(image_file) :
+            return {"no face"}
         encoded_string = base64.b64encode(image_file.read())
 
     response = requests.request( 'POST', api_url, data = { "img" : encoded_string } )
-    return print(response.text)
+    return response.text
 
 
 def webcam_face_recognizer():
