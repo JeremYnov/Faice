@@ -13,9 +13,19 @@ from screens.NoteScreen import NoteScreen
 
 from conf.utils import *
 
-class SM( ScreenManager ):
+class MyScreenManager( ScreenManager ):
     user_id = 1    #To do -> rendre dynamique
     selected_note = {}  #Can be accessed from all screens
+
+    def __init__(self, **kwargs):
+        super(MyScreenManager, self).__init__(**kwargs)
+        self.add_widget(FirstScreen(name='first_screen'))
+        self.add_widget(LoginScreen(name='login_screen'))
+        self.add_widget(NotesListScreen(name='main_screen'))
+        self.add_widget(NoteScreen(name='note_screen'))
+    
+    def build(self):
+        self.add_widget(FirstScreen(name='first_screen'))
 
     def display_dialog( self, dialog_type ):
 
@@ -29,8 +39,12 @@ class SM( ScreenManager ):
 
 
 class MainApp( MDApp ):
+
     def build( self ):
         Window.size = window_size
+        sm = MyScreenManager()
+        return sm
+        
 
 if __name__ == "__main__":
     MainApp().run()

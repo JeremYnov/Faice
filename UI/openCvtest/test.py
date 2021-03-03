@@ -28,7 +28,7 @@ def auto_crop_image(image, frame, vc):
             (x, y, w, h) = faces[0]
             center_x = x+w/2
             center_y = y+h/2
-            height, width = im.shape
+            height, width = im.shape[0], im.shape[1]
             b_dim = min(max(w,h)*1.2,width, height)
             box = [center_x-b_dim/2, center_y-b_dim/2, center_x+b_dim/2, center_y+b_dim/2]
             box = [int(x) for x in box]
@@ -45,21 +45,20 @@ def auto_crop_image(image, frame, vc):
                 
                 # # Aller dans le bon directory
                 current_dir = os.getcwd()
-                path = current_dir + "\\face\\"
+                path = current_dir + "/face/"
                 cv2.imwrite(os.path.join(path,'saved_img.jpg'), img=crpim)
                 cv2.imwrite(os.path.join(path,'saved_img-final.jpg'), img=gray)
     return
 
 def send_image_to_api():
-    api_url = "http://127.0.0.1:5000/face64"
+    api_url = "http://127.0.0.1:5000/face"
     current_dir = os.getcwd()
-    path = current_dir + "\\face\\"
+    path = current_dir + "/face/"
     imgPath = path + "saved_img-final.jpg"
 
     with open(imgPath, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
+        response = requests.request( 'POST', api_url, files = { "img" : image_file } )
 
-    response = requests.request( 'POST', api_url, data = { "img" : encoded_string } )
     return print(response.text)
 
 
@@ -72,13 +71,8 @@ def webcam_face_recognizer():
         auto_crop_image(img, frame, vc)
         send_image_to_api()
         current_dir = os.getcwd()
-        path = current_dir + "\\face\\"
-        os.remove(os.path.join(path,'saved_img-final.jpg'))
-        os.remove(os.path.join(path,'saved_img.jpg'))
- 
-        key = cv2.waitKey(1) & 0xff
-        if key == 27:
-            break
-    cv2.destroyWindow("preview")
+        path = current_dir + "/face/"
+        # os.remove(os.path.join(path,'saved_img-final.jpg'))
+        # os.remove(os.path.join(path,'saved_img.jpg'))
     
 webcam_face_recognizer()

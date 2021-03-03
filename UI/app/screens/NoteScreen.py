@@ -12,11 +12,11 @@ class NoteScreen( Screen ):
 
     def __init__( self, **kwargs ):
         super( NoteScreen, self ).__init__( **kwargs )
-
-    def build( self, *args ):
         #View components binding.
         self.note_title = self.ids[ 'noteTitle' ]
         self.note_content = self.ids[ 'noteContent' ]
+
+    def build( self, *args ):
         #Fill fields with selected note values.
         self.note_title.text = self.manager.selected_note[ 'title' ]
         self.note_content.text = self.manager.selected_note[ 'content' ]
@@ -42,7 +42,7 @@ class NoteScreen( Screen ):
                                 )
             #Create
             else :
-                req = UrlRequest( base_url + 'updatenote',
+                req = UrlRequest( base_url + 'addnote',
                                   on_success = self.manager.display_dialog( 'note_created' ),
                                   req_body = body,
                                   req_headers = headers,
@@ -64,5 +64,5 @@ class NoteScreen( Screen ):
 
     def return_to_list( self ):
         #Redirection
-        self.manager.current = 'notes'
+        self.manager.current = 'main_screen'
         self.manager.transition.direction = 'right'
