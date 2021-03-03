@@ -7,17 +7,13 @@ from flask_migrate import Migrate
 from datetime import datetime
 import os
 # # Imports IA
-# import numpy as np
-# import cv2
-# from scipy.spatial.distance import cosine as dcos
-# from scipy.io import loadmat
-# from keras.models import Sequential, Model
-# from keras.layers import Flatten, Dropout, Activation, Permute
-# from keras.layers import Convolution2D, MaxPooling2D
-# from keras import backend as K
-# K.set_image_data_format( 'channels_last' )
+from matplotlib import pyplot
+from numpy import asarray
+from scipy.spatial.distance import cosine
+from keras_vggface.vggface import VGGFace
+from keras_vggface.utils import preprocess_input
+import numpy as np
 
-import base64
 
 # Initiate APP
 app = Flask(__name__)
@@ -65,26 +61,76 @@ class FaceApi(Resource):
         current_dir = os.getcwd()
         path = current_dir + "/faces/"
         img = request.files['img']
-        img.save(path + 'test.jpg')
-        response = {'message':'image received'}
-        return response
+        imgPath = path + 'test.jpg'
+        img.save(imgPath)
+        self.array_shape = None
+        self.array_data_type = None
+        # get embeddings file filenames
+        embeddings = self.get_embeddings(imgPath)
+        # define face to verify if known in our database
+        faceToAnalysis = embeddings[0]
+        #Fetch la DB, tranform en array et append a faces
+        users = User.query.all()
+        for user in users :
+            tempArray = user.facialChain
+            tempArray = np.frombuffer(tempArray, dtype=self.array_data_type).reshape(self.array_shape)
+            embeddings.append(tempArray)
+        embeddings.pop(0)
+        for embedding in embeddings :
+            result = self.is_match(faceToAnalysis, embedding)
+        if result is not None :
+            user_array = result.tostring()
+            user = User.query.filterby(facialChain = user_array).first()
+        else :
+            user_array = self.faceToAnalysis.tostring()
+            insert = User(user_array)
+            db.session.add(insert)
+            db.session.commit()
+            user = User.query.filterby(facialChain = user_array).first()
+        # self.is_match(embeddings[0], embeddings[1])
+        # self.is_match(embeddings[0], embeddings[2])
+        # # verify known photos of other people
+        # # print('Negative Tests')
+        # self.is_match(embeddings[0], embeddings[3])
+        return user.id
 
-        # LA SUITE !!!!
-        # # Query the User
-        # user = User.query.filter_by(facialChain=facialChain).first()
-        # # if user doesn't exist, create a new user
-        # if user is None :
-        #     newUser = User(facialChain=facialChain)
-        #     db.session.add(newUser)
-        #     db.session.commit()
-        #     user = User.query.filter_by(facialChain=facialChain).first()
-        # # Query the notes of the user
-        # userNotes = Note.query.filter_by(user_id=user.id).all()
-        # # If no notes, return a statement
-        # if not userNotes :
-        #     return jsonify('You don\'t have any notes for now... Start noting')
-        # # Else return notes
-        # return jsonify(notes=[note.serialize() for note in userNotes])
+    def face_as_array(self, filename):
+        # load image from file
+        image = pyplot.imread(filename)
+        # Transform our image in array 
+        face_array = asarray(image)
+        # get shape and type
+        self.array_shape = face_array.shape
+        self.array_data_type = face_array.dtype.name
+        return face_array
+
+    def get_embeddings(self, path):
+        # extract faces and calculate face embeddings for a list of photo files
+        # Transform filenames in path
+        # extract faces
+        faces = [self.face_as_array(path)]  # faces[0] = user wanted to be identified
+        # convert into an array of samples
+        samples = asarray(faces, 'float32')
+        # prepare the face for the model, e.g. center pixels
+        samples = preprocess_input(samples, version=2)
+        # create a vggface model
+        model = VGGFace(model='resnet50', include_top=False,
+                        input_shape=(224, 224, 3), pooling='avg')
+        # perform prediction
+        yhat = model.predict(samples)
+        return yhat
+
+    # determine if a candidate face is a match for a known face
+    def is_match(known_embedding, candidate_embedding, thresh=0.5):
+        # calculate distance between embeddings
+        score = cosine(known_embedding, candidate_embedding)
+        if score <= thresh:
+            print('>face is a Match (%.3f <= %.3f)' % (score, thresh))
+            return candidate_embedding
+        # Todo remove ELSE When checked
+        else:
+            print('>face is NOT a Match (%.3f > %.3f)' % (score, thresh))
+        return None
 
 class GetNote(Resource):
     def get(self, user_id):
@@ -116,23 +162,11 @@ class DeleteNote(Resource):
         db.session.commit()
         return jsonify("200")
 
-class B64(Resource):
-    def post(self, data):
-        # Aller dans le bon directory
-        current_dir = os.getcwd();
-        path = current_dir + "\\faces\\"
-        img = data
-        img = base64.b64decode(img.encode('unicode-escape'))
-        img.save(path + 'test.jpg')
-        response = {'message':'image received'}
-        return response
-
 api.add_resource(FaceApi, "/face")
 api.add_resource(GetNote, "/getnote/<int:user_id>")
 api.add_resource(AddNote, "/addnote")
 api.add_resource(UpdateNote, "/updatenote")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")
-api.add_resource(B64, "/face64/<string:data>")
 
 if __name__ == "__main__":
     app.run(debug=True)
