@@ -4,7 +4,7 @@ import requests
 import json
 import base64
 
-def auto_crop_image(image):
+def auto_crop_image(image, frame, vc):
     if image is not None:
         im = image.copy()
         # Load HaarCascade from the file with OpenCV
@@ -44,7 +44,7 @@ def auto_crop_image(image):
                 
                 # # Aller dans le bon directory
                 current_dir = os.getcwd()
-                path = current_dir + "/face/"
+                path = current_dir + "\\face\\"
                 cv2.imwrite(os.path.join(path,'saved_img.jpg'), img=crpim)
                 cv2.imwrite(os.path.join(path,'saved_img-final.jpg'), img=gray)
     return
@@ -52,13 +52,15 @@ def auto_crop_image(image):
 def send_image_to_api():
     api_url = "http://127.0.0.1:5000/face"
     current_dir = os.getcwd()
-    path = current_dir + "/face/"
-    imgPath = path + "saved_img-final.jpg"
+    path = current_dir + "\\face\\"
+    imgPath = path + "saved_img.jpg"
 
     with open(imgPath, "rb") as image_file:
+        print("==== REQUEST TO API =====")
         response = requests.request( 'POST', api_url, files = { "img" : image_file } )
+        print(response.text)
 
-    return print(response.text)
+    # return print(response.text)
 
 
 def webcam_face_recognizer():
@@ -70,7 +72,7 @@ def webcam_face_recognizer():
         auto_crop_image(img, frame, vc)
         send_image_to_api()
         current_dir = os.getcwd()
-        path = current_dir + "/face/"
+        path = current_dir + "\\face\\"
         # os.remove(os.path.join(path,'saved_img-final.jpg'))
         # os.remove(os.path.join(path,'saved_img.jpg'))
     

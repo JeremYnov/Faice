@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from datetime import datetime
 import os
+import json
 # # Imports IA
 from matplotlib import pyplot
 from numpy import asarray
@@ -59,7 +60,7 @@ class FaceApi(Resource):
     def post(self):
         # Aller dans le bon directory
         current_dir = os.getcwd()
-        path = current_dir + "/faces/"
+        path = current_dir + "\\faces\\"
         img = request.files['img']
         imgPath = path + 'test.jpg'
         img.save(imgPath)
@@ -67,41 +68,54 @@ class FaceApi(Resource):
         self.array_data_type = None
         # get embeddings file filenames
         embeddings = self.get_embeddings(imgPath)
+        
         # define face to verify if known in our database
         faceToAnalysis = embeddings[0]
+        print("=====THIS IS MY FACE TO ANALYSIS=====")
+        print(faceToAnalysis)
+        
         #Fetch la DB, tranform en array et append a faces
         users = User.query.all()
         for user in users :
             tempArray = user.facialChain
+            # tempArray = tempArray.encode()
             tempArray = np.frombuffer(tempArray, dtype=self.array_data_type).reshape(self.array_shape)
-            embeddings.append(tempArray)
-        embeddings.pop(0)
+            # embeddings.append(tempArray)
+            np.concatenate((embeddings,tempArray))
+        np.delete(embeddings,0,0)
         for embedding in embeddings :
             result = self.is_match(faceToAnalysis, embedding)
-        if result is not None :
+            
+        if result is None :
             user_array = result.tostring()
-            user = User.query.filterby(facialChain = user_array).first()
+            # user_array = str(user_array, 'utf-8')
+            user = User.query.filter_by(facialChain = user_array).first()
+            print("==== IF RESULT IS NOT NONE =====")
+            print(type(user))
         else :
-            user_array = self.faceToAnalysis.tostring()
-            insert = User(user_array)
+            user_array = faceToAnalysis.tostring()
+            # user_array = str(user_array, 'utf-8')
+            insert = User(facialChain = user_array)
             db.session.add(insert)
             db.session.commit()
-            user = User.query.filterby(facialChain = user_array).first()
+            user = User.query.filter_by(facialChain = user_array).first()
+            print("==== IF RESULT IS NONE =====")
+            print(type(user))
         # self.is_match(embeddings[0], embeddings[1])
         # self.is_match(embeddings[0], embeddings[2])
         # # verify known photos of other people
         # # print('Negative Tests')
         # self.is_match(embeddings[0], embeddings[3])
-        return user.id
+        print('=====TEST=====')
+        print(type(user))
+        return json.dumps(user.id)
 
     def face_as_array(self, filename):
         # load image from file
         image = pyplot.imread(filename)
         # Transform our image in array 
         face_array = asarray(image)
-        # get shape and type
-        self.array_shape = face_array.shape
-        self.array_data_type = face_array.dtype.name
+        
         return face_array
 
     def get_embeddings(self, path):
@@ -118,19 +132,26 @@ class FaceApi(Resource):
                         input_shape=(224, 224, 3), pooling='avg')
         # perform prediction
         yhat = model.predict(samples)
+        
+        # get shape and type
+        self.array_shape = yhat.shape
+        self.array_data_type = yhat.dtype.name
+        
         return yhat
 
     # determine if a candidate face is a match for a known face
-    def is_match(known_embedding, candidate_embedding, thresh=0.5):
+    def is_match(self, known_embedding, candidate_embedding, thresh=0.5):
         # calculate distance between embeddings
         score = cosine(known_embedding, candidate_embedding)
         if score <= thresh:
             print('>face is a Match (%.3f <= %.3f)' % (score, thresh))
+            # print("=====THIS IS MY CANDIDATE EMBEDDING=====")
+            # print(candidate_embedding)
             return candidate_embedding
         # Todo remove ELSE When checked
         else:
             print('>face is NOT a Match (%.3f > %.3f)' % (score, thresh))
-        return None
+            return None
 
 class GetNote(Resource):
     def get(self, user_id):
