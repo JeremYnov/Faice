@@ -11,12 +11,12 @@ class NotesListScreen( Screen ):
 
     def __init__( self, **kwargs ):
         super( NotesListScreen, self ).__init__( **kwargs )
-        Clock.schedule_once( self.build )
-
-    def build( self, *args ):
         #View components binding.
         self.notes_container = self.ids[ "notesContainer" ]
         self.spinner = self.ids[ "spinner" ]
+
+    def build( self, *args ):
+        return
 
     #API call
     def get_notes( self ):
@@ -53,7 +53,7 @@ class NotesListScreen( Screen ):
             'user_id' : self.manager.user_id
         }
         #Redirection
-        self.manager.current = 'note'
+        self.manager.current = 'note_screen'
         self.manager.transition.direction = 'left'
 
     def create_note( self ):
@@ -65,5 +65,5 @@ class NotesListScreen( Screen ):
             'user_id' : self.manager.user_id
         }
         #Redirection
-        self.manager.current = 'note'
+        self.manager.current = 'note_screen'
         self.manager.transition.direction = 'left'

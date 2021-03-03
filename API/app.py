@@ -62,9 +62,9 @@ class Note(db.Model):
 class FaceApi(Resource):
     def post(self):
         # Aller dans le bon directory
-        current_dir = os.getcwd();
-        path = current_dir + "\\faces\\"
-        img = request.files['image']
+        current_dir = os.getcwd()
+        path = current_dir + "/faces/"
+        img = request.files['img']
         img.save(path + 'test.jpg')
         response = {'message':'image received'}
         return response
