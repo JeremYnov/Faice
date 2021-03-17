@@ -14,15 +14,17 @@ class LoginScreen( Screen ):
         current_dir = os.getcwd()
         self.path = current_dir + '/face/'
         self.camera = self.ids[ 'camera' ]
-        #Clock.schedule_interval(self.mainFace, 1)
+        Clock.schedule_interval(self.mainFace, 1)
         
     def mainFace(self):
-        while self.cropped == False :
+        if self.cropped == False :
             self.camera.export_to_png('face_img.png')
             img = cv2.imread('face_img.png')
             self.autoCropImage( img )
             os.remove(os.path.join(os.getcwd(), 'face_img.png'))
         self.sendImageToApi()
+
+        Clock.unschedule(self.mainFace) 
         # os.remove(os.path.join(self.path,'saved_img-final.jpg'))
         # os.remove(os.path.join(self.path,'saved_img.jpg'))
             
