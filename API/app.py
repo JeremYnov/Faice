@@ -190,4 +190,4 @@ api.add_resource(UpdateNote, "/updatenote")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

@@ -7,5 +7,8 @@ services:
       - "3306:3306"
   faice-api:
     build: faice-api/.
+    restart: always
+    depends_on: 
+      - "db"
     ports:
       - "5000:5000"

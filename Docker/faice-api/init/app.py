@@ -23,7 +23,7 @@ api = Api(app)
 # Initiate DB
 # to create and update DB :
 # flask db init flask db migrate flask db upgrade
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/ydays2020'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@db:3306/ydays2020'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -190,4 +190,4 @@ api.add_resource(UpdateNote, "/updatenote")
 api.add_resource(DeleteNote, "/deletenote/<int:note>")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
