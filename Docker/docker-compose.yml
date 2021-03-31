@@ -1,0 +1,11 @@
+version: "3"
+services:
+  db:
+    build: database/.
+    restart: always
+    ports:
+      - "3306:3306"
+  faice-api:
+    build: faice-api/.
+    ports:
+      - "5000:5000"

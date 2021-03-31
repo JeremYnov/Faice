@@ -1,0 +1,9 @@
+flask
+flask_restful
+flask_migrate
+flask_sqlalchemy
+scipy
+matplotlib
+pymysql
+keras_vggface
+keras_applications
