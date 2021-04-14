@@ -85,14 +85,10 @@ class FaceApi(Resource):
         np.delete(embeddings,0,0)
         for embedding in embeddings :
             result = self.is_match(faceToAnalysis, embedding)
-            
+            print(result)
+            break
+        print("======================ENTERING IN IF CONDITION==================================")
         if result is None :
-            user_array = result.tostring()
-            # user_array = str(user_array, 'utf-8')
-            user = User.query.filter_by(facialChain = user_array).first()
-            print("==== IF RESULT IS NOT NONE =====")
-            print(type(user))
-        else :
             user_array = faceToAnalysis.tostring()
             # user_array = str(user_array, 'utf-8')
             insert = User(facialChain = user_array)
@@ -101,11 +97,13 @@ class FaceApi(Resource):
             user = User.query.filter_by(facialChain = user_array).first()
             print("==== IF RESULT IS NONE =====")
             print(type(user))
-        # self.is_match(embeddings[0], embeddings[1])
-        # self.is_match(embeddings[0], embeddings[2])
-        # # verify known photos of other people
-        # # print('Negative Tests')
-        # self.is_match(embeddings[0], embeddings[3])
+        else :
+            user_array = result.tostring()
+            # user_array = str(user_array, 'utf-8')
+            user = User.query.filter_by(facialChain = user_array).first()
+            print("==== IF RESULT IS NOT NONE =====")
+            print(type(user))
+            
         print('=====TEST=====')
         print(type(user))
         return json.dumps(user.id)
