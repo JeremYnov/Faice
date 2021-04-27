@@ -56,11 +56,10 @@ class NoteScreen( Screen ):
     #API call
     def delete_note( self ) :
         req = UrlRequest( base_url + 'deletenote/' + str( self.manager.selected_note[ 'id' ] ),
-                                  on_success = self.manager.display_dialog( 'note_created' ),
-                                  req_body = body,
-                                  req_headers = headers,
+                                  on_success = self.manager.display_dialog( 'note_deleted' ),
                                   #on_error = self.manager.display_dialog('network_error')
                         )
+        self.return_to_list()
 
     def return_to_list( self ):
         #Redirection

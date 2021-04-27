@@ -14,7 +14,7 @@ from screens.NoteScreen import NoteScreen
 from conf.utils import *
 
 class MyScreenManager( ScreenManager ):
-    user_id = 1    #To do -> rendre dynamique
+    user_id = 0    #To do -> rendre dynamique
     selected_note = {}  #Can be accessed from all screens
 
     def __init__(self, **kwargs):

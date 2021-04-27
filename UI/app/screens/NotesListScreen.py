@@ -67,3 +67,10 @@ class NotesListScreen( Screen ):
         #Redirection
         self.manager.current = 'note_screen'
         self.manager.transition.direction = 'left'
+    
+    def logout( self ):
+        self.manager.user_id = 0
+        self.manager.selected_note = {}
+        #Redirection
+        self.manager.current = 'first_screen'
+        self.manager.transition.direction = 'right'

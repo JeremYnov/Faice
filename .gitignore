@@ -2,3 +2,6 @@
 *venv
 *vgg-face.mat
 *__pycache__
+
+UI/app/face
+API/faces

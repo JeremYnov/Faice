@@ -60,7 +60,6 @@ class Note(db.Model):
 # API routes creation
 class FaceApi(Resource):
     def post(self):
-        print("=====ENTER IN POST FUNCTION=====")
         # Aller dans le bon directory
         current_dir = os.getcwd()
         path = os.path.join(current_dir, 'API', 'faces','')
@@ -88,28 +87,25 @@ class FaceApi(Resource):
             if i != 0:
                 matching = is_match(embeddings[0],embeddings[i])
                 if matching:
+                    print("=====FACE IS RECOGNIZE=====")
                     matchingUser = filenames[i]
-                    print(matchingUser)
                     os.remove(imgPath)
                     user = User.query.filter_by(image_url=matchingUser).first()
-                    print("=====MATCHING USER=====")
-                    break
-                else:
-                    print('=====FACE IS NOT RECOGNIZE=====')
+                    break                   
         if user == None:
+            print('=====FACE IS NOT RECOGNIZE=====')
             datePath = date + ".jpg"
+            print("=====CREATION OF NEW USER=====")
             newUser = User(image_url = datePath)
             db.session.add(newUser)
             db.session.commit()
             user = User.query.filter_by(image_url=datePath).first()
-            print("=====CREATION OF NEW USER=====")
+            
         return jsonify(user.serialize())
 
 
 def extract_face(filename, required_size=(224, 224)):
     # load image from file
-    print("=====ENTERING IN EXTRACTFACE FUNCTION=====")
-    print(os.getcwd())
     pixels = pyplot.imread(os.path.join(os.getcwd(),'API','faces',filename))
     
     # create the detector, using default weights
@@ -143,7 +139,6 @@ def extract_face(filename, required_size=(224, 224)):
     # converting back to numpy array
     # TODO => Converting back our str in array
     new_arr = np.frombuffer(face_array_str, dtype=array_data_type).reshape(array_shape)
-    # print(new_arr)
     return face_array
 
 # extract faces and calculate face embeddings for a list of photo files
@@ -151,8 +146,6 @@ def extract_face(filename, required_size=(224, 224)):
 
 def get_embeddings(filenames):
     # extract faces
-    print("=====THIS IS MY FILENAMES=====")
-    print(filenames)
     faces = [extract_face(f) for f in filenames]
 
     # convert into an array of samples

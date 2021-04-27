@@ -24,7 +24,7 @@
 <LoginScreen>:
 
     name: 'login_screen'
-    
+    on_pre_enter: root.mainFace()
 
     FloatLayout:
 
@@ -34,11 +34,6 @@
             text: "Faice"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "50sp"
-
-        Camera:
-            id: camera
-            resolution: (300, 500)
-            play: True
 
 
 <NotesListScreen>:
@@ -52,6 +47,15 @@
             text: "Faice"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "50sp"
+
+        MDFillRoundFlatButton:
+            pos_hint: {'y': 0.85, 'x': 0.7}
+            size_hint: (0.2, 0.1)
+            text: "Reload"
+            font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
+            font_size: "15sp"
+            on_press: root.get_notes()
+
 
         MDSpinner:
             id: spinner
@@ -83,7 +87,7 @@
             text: "Logout"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
             font_size: "15sp"
-            on_press: root.add_note()
+            on_press: root.logout()
 
 
 <NoteScreen>:
@@ -106,7 +110,7 @@
             size_hint: (0.8, 0.1)
             mode: "fill"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
-            font_size: "16sp"
+            font_size: "14sp"
             fill_color: 0, 0, 0, 0.1
 
         MDTextField:
@@ -116,25 +120,29 @@
             size_hint: (0.8, 0.4)
             mode: "fill"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
-            font_size: "16sp"
+            font_size: "14sp"
             fill_color: 0, 0, 0, 0.1
 
-        MDRoundFlatButton:
+        MDFillRoundFlatButton:
             pos_hint: {'y': 0.1, 'x': 0.1}
+            size_hint: (0.2, 0.1)
             text: "Return"
             text_color: 1, 1, 1, 1
             md_bg_color: 1, 0, 0, 0.6
+            font_size: "15sp"
             on_press: root.return_to_list()
 
-        MDRoundFlatButton:
-            pos_hint: {'y': 0.1, 'x': 0.6}
+        MDFillRoundFlatButton:
+            pos_hint: {'y': 0.1, 'x': 0.5}
+            size_hint: (0.2, 0.1)
             text: "Delete"
             text_color: 1, 1, 1, 1
             md_bg_color: 1, 0, 0, 0.6
+            font_size: "15sp"
             on_press: root.delete_note()
 
         MDFillRoundFlatButton:
-            pos_hint: {'y': 0.07, 'x': 0.7}
+            pos_hint: {'y': 0.1, 'x': 0.7}
             size_hint: (0.2, 0.1)
             text: "Save"
             font_name: "./fonts/ttf/JetBrainsMono-Regular.ttf"
