@@ -3,5 +3,5 @@
 *vgg-face.mat
 *__pycache__
 
-UI/app/face
-API/faces
+UI/app/face/saved_img.jpg
+API/faces/*

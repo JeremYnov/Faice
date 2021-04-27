@@ -16,7 +16,7 @@ II. UI (nécessite la version 3.7 de python)
     Aller dans le répertoire UI 
 
     1.  Installation de l'environnement virtuel 
-        virtualenv --python=lien jusqu'à votre installation python3.7
+        python virtualenv venv --python=lien jusqu'à votre installation python3.7/python.exe
 
     2.  Activer l'environement 
         venv/Scripts/activate
